@@ -1,0 +1,157 @@
+# Run shell
+python manage.py shell
+
+# Import models
+from practice_five.models import *
+
+# Get all objects from table
+all_orders = Order.objects.all()
+all_categories = Category.objects.all()
+
+# Create new book
+new_book = Book.objects.create(
+    title="Modern Art",
+    author="Leo James",
+    published_date="2001-04-10",
+    price=20,
+    is_bestseller=False
+)
+
+new_book = Book(
+    title="1984",
+    author="George Orwell",
+    published_date="1949-06-08",
+    isbn=20
+)
+
+# Внесение изменений перед сохранением (если необходимо)
+new_book.title = "Nineteen Eighty-Four"
+
+# Сохранение объекта в базе данных
+new_book.save()
+
+# Получение всех книг
+all_books = Book.objects.all()
+# Получение первой книги
+first_book = Book.objects.all().first()
+# Получение последней книги
+last_book = Book.objects.all().last()
+# Получение количества книг
+book_count = Book.objects.all().count()
+# Проверка существования книг
+has_books = Book.objects.all().exists()
+# Получение всех книг с указанием только названий и авторов
+books_values = Book.objects.all().values('title', 'author')
+
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+# Получение книги по ее уникальному идентификатору (id)
+try:
+    book = Book.objects.get(title='Book')
+    print(f"Книга найдена: {book.title}")
+except ObjectDoesNotExist:
+    print("Книга не найдена.")
+except MultipleObjectsReturned:
+    print("Найдено несколько книг с одинаковым id.")
+
+
+# Найти книги с точным названием "The Great Gatsby"
+books = Book.objects.filter(title__exact="The Great Gatsby")
+# Найти книги с названием "the great gatsby" независимо от регистра
+books = Book.objects.filter(title__iexact="the great gatsby")
+# Найти книги, в названии которых содержится "Gatsby"
+books = Book.objects.filter(title__contains="Gatsby")
+# Найти книги, в названии которых содержится "gatsby" независимо от регистра
+books = Book.objects.filter(title__icontains="gatsby")
+# Найти книги с ID 1, 2 или 3
+books = Book.objects.filter(id__in=[1, 2, 3])
+# Найти книги, опубликованные после 1 января 2000 года
+books = Book.objects.filter(published_date__gt="2000-01-01")
+# Найти книги, опубликованные 1 января 2000 года или позже
+books = Book.objects.filter(published_date__gte="2000-01-01")
+# Найти книги, опубликованные до 1 января 2000 года
+books = Book.objects.filter(published_date__lt="2000-01-01")
+# Найти книги, опубликованные 1 января 2000 года или раньше
+books = Book.objects.filter(published_date__lte="2000-01-01")
+# Найти книги, у которых дата публикации неизвестна
+books = Book.objects.filter(published_date__isnull=True)
+# Найти книги, название которых начинается с "The"
+books = Book.objects.filter(title__startswith="The")
+# Найти книги, название которых начинается с "the" независимо от регистра
+books = Book.objects.filter(title__istartswith="the")
+
+
+
+from django.db.models import Q
+# Найти книги, которые являются бестселлерами и опубликованы после 1 января 2000 года
+books = Book.objects.filter(
+    Q(is_bestseller=True) & Q(published_date__gt="2000-01-01")
+)
+# Найти книги, которые являются бестселлерами или опубликованы после 1 января 2000 года
+books = Book.objects.filter(
+    Q(is_bestseller=True) | Q(published_date__gt="2000-01-01")
+)
+# Найти книги, которые не являются бестселлерами
+books = Book.objects.filter(~Q(is_bestseller=True))
+# Найти книги, которые либо являются бестселлерами, либо опубликованы после 1 января 2000 года, но не написаны автором "George Orwell"
+books = Book.objects.filter(
+    (Q(is_bestseller=True) | Q(published_date__gt="2000-01-01")) & ~Q(author="George Orwell")
+)
+
+
+
+# Обновление всех книг автора "F. Scott Fitzgerald"
+Book.objects.filter(author="F. Scott Fitzgerald").update(price=9.99)
+# Обновление полей нескольких записей
+Book.objects.filter(published_date__year=2021).update(price=15.99, title="Updated Title")
+
+from django.db.models import F
+# Уменьшение цены всех книг на 5%
+Book.objects.update(price=F('price') * 0.95)
+# Копирование значения поля price в поле discounted_price со скидкой в 10%
+Book.objects.update(discounted_price=F('price') * 0.9)
+# Найти все книги, у которых discounted_price меньше price
+books = Book.objects.filter(discounted_price__lt=F('price'))
+
+
+
+# Загрузка объекта из базы данных
+book = Book.objects.get(id=1)
+# Удаление объекта
+book.delete()
+
+# Удаление всех книг автора "F. Scott Fitzgerald"
+deleted_count, _ = Book.objects.filter(author="F. Scott Fitzgerald").delete()
+
+
+# Создание издателя и книг
+publisher = Publisher.objects.create(name="Penguin Books", established_date="2023-01-01")
+book1 = Book.objects.create(title="Penguin 1", author="Author 1", published_date="2023-01-01", publisher=publisher)
+book2 = Book.objects.create(title="Penguin 2", author="Author 2", published_date="2023-02-01", publisher=publisher)
+# Проверка, что книги добавлены
+books = Book.objects.filter(publisher=publisher)
+# Удаление издателя и всех связанных книг
+publisher.delete()
+
+
+# Создание списка объектов
+books = [
+    Book(title="Book 1", author="Author 1", published_date="2021-01-01", price=12.99),
+    Book(title="Book 2", author="Author 2", published_date="2022-01-01", price=14.99),
+    Book(title="Book 3", author="Author 3", published_date="2023-01-01", price=16.99),
+]
+# Массовое создание записей
+Book.objects.bulk_create(books)
+
+
+from decimal import Decimal
+# Вернем все объекты из базы данных
+books = Book.objects.all()
+# Изменение цены каждой книги
+for book in books:
+    book.price += Decimal("1.0")
+# Массовое обновление записей
+Book.objects.bulk_update(books, ['price'])
+
+
+# Удаление всех книг автора "Author 1"
+Book.objects.filter(author="Author 1").delete()

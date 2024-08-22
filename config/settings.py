@@ -31,6 +31,11 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 # AUTH_USER_MODEL = 'first_app.CustomUser'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5,  # Размер страницы по умолчанию
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,6 +51,7 @@ INSTALLED_APPS = [
     'practicum_two.apps.PracticumTwoConfig',
     'django_orm.apps.DjangoOrmConfig',
     'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

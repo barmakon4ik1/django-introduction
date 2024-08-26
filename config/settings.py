@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 from environ import Env
 
@@ -34,6 +34,34 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 5,  # Размер страницы по умолчанию
+
+    # BasicAuthentication
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'rest_framework.authentication.BasicAuthentication',
+    # ],
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    # TokenAuthentication
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'rest_framework.authentication.TokenAuthentication',
+    # ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # другие методы аутентификации (если есть)
+    ],
+
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5), # срок жизни (5 мин)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1), # срок жизни рефреша (1 день)
+    'ROTATE_REFRESH_TOKENS': True, # будет ли создаваться рефреш при обновлении рефреша?
+    'BLACKLIST_AFTER_ROTATION': True, # старый рефреш в черный список?
+    'AUTH_HEADER_TYPES': ('Bearer',), # определяет тип заголовка при передаче токена
 }
 
 # Application definition
@@ -52,6 +80,8 @@ INSTALLED_APPS = [
     'django_orm.apps.DjangoOrmConfig',
     'rest_framework',
     'django_filters',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [

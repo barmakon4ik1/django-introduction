@@ -13,6 +13,7 @@ from datetime import timedelta
 from pathlib import Path
 from environ import Env
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = Env()
@@ -57,7 +58,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5), # срок жизни (5 мин)
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60), # срок жизни (5 мин)
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1), # срок жизни рефреша (1 день)
     'ROTATE_REFRESH_TOKENS': True, # будет ли создаваться рефреш при обновлении рефреша?
     'BLACKLIST_AFTER_ROTATION': True, # старый рефреш в черный список?

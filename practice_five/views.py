@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from rest_framework import viewsets, generics, status
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
@@ -8,7 +7,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from .models import Category, Supplier, Product
 from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
@@ -30,8 +28,9 @@ class ProductListCreateView(ListCreateAPIView):
     filterset_fields = ['category', 'price']
     # authentication_classes = [BasicAuthentication]
     # permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
 
     def get_serializer_class(self):
         if self.request.method == 'POST':

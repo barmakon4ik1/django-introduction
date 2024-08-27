@@ -28,6 +28,9 @@ urlpatterns = [
          name='product-details-retrieve-update-delete'),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('api/login/', LoginView.as_view(), name='login'),
+    path('api/logout/', LogoutView.as_view(), name='login'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/', ReadOnlyOrAuthenticatedView.as_view(), name='admin'),
+    path('api/register/', RegisterView.as_view(), name='register'),
 ]

@@ -93,13 +93,16 @@ class CustomerRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 class OrderListCreateView(ListCreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    authentication_classes = [JWTAuthentication]
+    # authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return OrderSerializer
         return OrderCreateUpdateSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(customer=self.request.user)
 
 
 class OrderRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):

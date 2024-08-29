@@ -2,6 +2,8 @@ from datetime import datetime
 from django.utils.deprecation import MiddlewareMixin
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.exceptions import TokenError
+
+
 class JWTAuthenticationMiddleware(MiddlewareMixin):
 
     def process_request(self, request):

@@ -90,6 +90,7 @@ class Order(models.Model):
     class Meta:
         ordering = ['-order_date']
         get_latest_by = 'order_date'
+        permissions = [("can_view_statistics", "Can view statistics"), ]
 
 
 class OrderItem(models.Model):

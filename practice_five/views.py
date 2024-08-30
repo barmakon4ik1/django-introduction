@@ -1,13 +1,14 @@
 from datetime import datetime
 from rest_framework import viewsets, generics, status
 from rest_framework.authentication import BasicAuthentication, TokenAuthentication
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Category, Supplier, Product
+from .permissions import *
 from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -102,16 +103,27 @@ class OrderListCreateView(ListCreateAPIView):
         return OrderCreateUpdateSerializer
 
     def perform_create(self, serializer):
-        serializer.save(customer=self.request.user)
+        customer = get_object_or_404(Customer, email=self.request.user.email)
+        serializer.save(customer=customer)
 
 
-class OrderRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+class OrderDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.all()
+    permission_classes = [IsCustomerOrReadOnly]
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return OrderSerializer
         return OrderCreateUpdateSerializer
+
+
+class OrderStatisticsView(APIView):
+    permission_classes = [CanViewStatistics]
+
+    def get(self, request, *args, **kwargs):
+        total_orders = Order.objects.count()
+        data = {'total_orders': total_orders}
+        return Response(data)
 
 
 class OrderItemsListCreateView(ListCreateAPIView):

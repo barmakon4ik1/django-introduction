@@ -73,8 +73,8 @@ class ProjectFile(models.Model):
         return self.title
 
 
-back_tag = Tag.objects.get(title='Backend')
-devops_tag = Tag.objects.get(title='DevOPS')
-designer_tag = Tag.objects.get(title='Design')
-front_tag = Tag.objects.get(title='Frontend')
-qa_tag = Tag.objects.get(title='Q&A')
+# back_tag = Tag.objects.get(title='Backend')
+# devops_tag = Tag.objects.get(title='DevOPS')
+# designer_tag = Tag.objects.get(title='Design')
+# front_tag = Tag.objects.get(title='Frontend')
+# qa_tag = Tag.objects.get(title='Q&A')
